@@ -3,50 +3,74 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Retroyer — Juegos HTML5</title>
 
 <style>
 *{box-sizing:border-box}
-body{
+
+html,body{
     margin:0;
+    width:100%;
+    min-height:100%;
     font-family:Arial,sans-serif;
     background:#070a11;
-    color:#fff;
+    color:white;
 }
+
+body{
+    overflow-x:hidden;
+}
+
+button,input{
+    font:inherit;
+}
+
 header{
     position:sticky;
     top:0;
-    z-index:10;
-    background:#0b101aeF;
+    z-index:20;
+    background:#0b101af2;
     backdrop-filter:blur(15px);
     border-bottom:1px solid #202b3d;
 }
+
 .nav{
     max-width:1400px;
     margin:auto;
-    padding:16px 22px;
+    padding:15px 20px;
     display:flex;
     align-items:center;
-    gap:22px;
+    gap:20px;
 }
+
 .logo{
     font-size:28px;
     font-weight:900;
     color:#00eaff;
 }
-.logo span{color:#fff}
-.search{flex:1}
+
+.logo span{
+    color:white;
+}
+
+.search{
+    flex:1;
+}
+
 .search input{
     width:100%;
-    padding:13px 18px;
+    padding:13px 17px;
     border-radius:12px;
     border:1px solid #29364b;
     background:#111722;
-    color:#fff;
+    color:white;
     outline:none;
 }
-.search input:focus{border-color:#00eaff}
+
+.search input:focus{
+    border-color:#00eaff;
+}
 
 .hero{
     max-width:1400px;
@@ -58,21 +82,30 @@ header{
         radial-gradient(circle at 20% 80%,#00eaff25,transparent 35%),
         #101827;
 }
+
 .hero h1{
     font-size:clamp(40px,7vw,75px);
     margin:0 0 10px;
 }
-.hero h1 span{color:#00eaff}
-.hero p{color:#98a6bb;font-size:18px}
+
+.hero h1 span{
+    color:#00eaff;
+}
+
+.hero p{
+    color:#98a6bb;
+    font-size:18px;
+}
 
 .categories{
     max-width:1400px;
     margin:auto;
-    padding:0 22px 25px;
+    padding:0 20px 25px;
     display:flex;
     gap:9px;
     overflow-x:auto;
 }
+
 .category{
     border:1px solid #29364b;
     background:#111722;
@@ -82,6 +115,7 @@ header{
     cursor:pointer;
     white-space:nowrap;
 }
+
 .category.active,
 .category:hover{
     background:#00eaff;
@@ -91,20 +125,26 @@ header{
 .content{
     max-width:1400px;
     margin:auto;
-    padding:0 22px 50px;
+    padding:0 20px 50px;
 }
+
 .top{
     display:flex;
     justify-content:space-between;
+    align-items:center;
     margin-bottom:18px;
 }
-#count{color:#748197}
+
+#count{
+    color:#748197;
+}
 
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
     gap:16px;
 }
+
 .card{
     background:#111722;
     border:1px solid #202c3e;
@@ -113,10 +153,12 @@ header{
     cursor:pointer;
     transition:.2s;
 }
+
 .card:hover{
     transform:translateY(-5px);
     border-color:#00eaff;
 }
+
 .cover{
     height:125px;
     display:grid;
@@ -124,18 +166,21 @@ header{
     font-size:55px;
     background:linear-gradient(135deg,#16253b,#0b1019);
 }
-.info{padding:13px}
+
+.info{
+    padding:13px;
+}
+
 .info h3{
     margin:0;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
 }
+
 .info p{
     margin:7px 0 0;
     color:#718098;
     font-size:13px;
 }
+
 .tag{
     display:inline-block;
     margin-top:9px;
@@ -146,15 +191,17 @@ header{
     font-size:11px;
 }
 
-/* GAME */
+/* PLAYER */
+
 #player{
     display:none;
     position:fixed;
     inset:0;
-    z-index:50;
+    z-index:100;
     background:#05070c;
-    padding:15px;
+    padding:10px;
 }
+
 .playerBox{
     width:min(1100px,100%);
     height:100%;
@@ -162,12 +209,14 @@ header{
     display:flex;
     flex-direction:column;
 }
+
 .playerHead{
+    min-height:48px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:10px 0;
 }
+
 .close{
     border:0;
     border-radius:9px;
@@ -176,24 +225,167 @@ header{
     padding:9px 15px;
     cursor:pointer;
 }
+
 .gameCanvas{
     flex:1;
     min-height:0;
-    display:grid;
-    place-items:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
+
 canvas{
-    max-width:100%;
-    max-height:100%;
+    width:min(800px,100%);
+    height:auto;
+    aspect-ratio:800/500;
     background:#05070b;
     border:1px solid #27354a;
     border-radius:12px;
+    touch-action:none;
 }
-.controls{
+
+.controlsText{
     text-align:center;
-    padding:10px;
+    padding:7px;
     color:#8391a6;
     font-size:13px;
+}
+
+/* TOUCH CONTROLS */
+
+.touchControls{
+    display:none;
+    width:min(420px,100%);
+    margin:auto;
+    padding:8px 5px 12px;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+.touchGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    max-width:230px;
+    margin:auto;
+}
+
+.touchBtn,
+.actionBtn{
+    min-height:58px;
+    border:1px solid #34445c;
+    border-radius:14px;
+    background:#172236;
+    color:white;
+    font-size:25px;
+    cursor:pointer;
+    touch-action:none;
+    -webkit-tap-highlight-color:transparent;
+}
+
+.touchBtn:active,
+.actionBtn:active{
+    background:#00eaff;
+    color:#001014;
+    transform:scale(.95);
+}
+
+.touchBtn.empty{
+    visibility:hidden;
+}
+
+.actionRow{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    margin-top:8px;
+}
+
+.actionBtn{
+    min-width:130px;
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+
+    header{
+        position:relative;
+    }
+
+    .nav{
+        flex-wrap:wrap;
+        padding:12px;
+    }
+
+    .logo{
+        width:100%;
+    }
+
+    .hero{
+        margin:15px 10px;
+        padding:35px 20px;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
+
+    .content{
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .categories{
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+    }
+
+    .cover{
+        height:95px;
+        font-size:43px;
+    }
+
+    .info{
+        padding:10px;
+    }
+
+    .info h3{
+        font-size:14px;
+    }
+
+    .playerHead{
+        padding:3px;
+    }
+
+    .gameCanvas{
+        flex:none;
+        width:100%;
+    }
+
+    .touchControls{
+        display:block;
+    }
+
+    #player{
+        padding:5px;
+    }
+
+    .controlsText{
+        font-size:11px;
+    }
+}
+
+/* DESKTOP: esconder controles */
+@media(min-width:701px){
+    .touchControls{
+        display:none!important;
+    }
 }
 </style>
 
@@ -202,152 +394,452 @@ canvas{
 <body>
 
 <header>
-    <div class="nav">
-        <div class="logo">RETRO<span>YER</span></div>
-        <div class="search">
-            <input id="search" placeholder="🔎 Buscar juegos...">
-        </div>
-    </div>
+<div class="nav">
+
+<div class="logo">
+RETRO<span>YER</span>
+</div>
+
+<div class="search">
+<input id="search" placeholder="🔎 Buscar juegos...">
+</div>
+
+</div>
 </header>
 
 <section class="hero">
-    <h1>Juega <span>sin límites.</span></h1>
-    <p>Juegos HTML5 gratuitos creados para Retroyer.</p>
+
+<h1>
+Juega <span>sin límites.</span>
+</h1>
+
+<p>
+Juegos HTML5 para PC, Android y iPhone.
+</p>
+
 </section>
 
 <div class="categories">
-    <button class="category active" data-cat="Todos">🔥 Todos</button>
-    <button class="category" data-cat="Arcade">🕹️ Arcade</button>
-    <button class="category" data-cat="Acción">⚡ Acción</button>
-    <button class="category" data-cat="Puzzle">🧩 Puzzle</button>
-    <button class="category" data-cat="Clásicos">👾 Clásicos</button>
+
+<button class="category active" data-cat="Todos">
+🔥 Todos
+</button>
+
+<button class="category" data-cat="Arcade">
+🕹️ Arcade
+</button>
+
+<button class="category" data-cat="Acción">
+⚡ Acción
+</button>
+
+<button class="category" data-cat="Puzzle">
+🧩 Puzzle
+</button>
+
+<button class="category" data-cat="Clásicos">
+👾 Clásicos
+</button>
+
 </div>
 
 <main class="content">
-    <div class="top">
-        <h2>🎮 Juegos</h2>
-        <span id="count"></span>
-    </div>
-    <div class="grid" id="grid"></div>
+
+<div class="top">
+<h2>🎮 Juegos</h2>
+<span id="count"></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
 </main>
 
+<!-- PLAYER -->
+
 <div id="player">
-    <div class="playerBox">
-        <div class="playerHead">
-            <strong id="gameTitle">Juego</strong>
-            <button class="close" id="close">✕ Cerrar</button>
-        </div>
 
-```
-    <div class="gameCanvas">
-        <canvas id="canvas" width="800" height="500"></canvas>
-    </div>
+<div class="playerBox">
 
-    <div class="controls" id="controls"></div>
+<div class="playerHead">
+
+<strong id="gameTitle">
+Juego
+</strong>
+
+<button class="close" id="close">
+✕ Cerrar
+</button>
+
 </div>
-```
+
+<div class="gameCanvas">
+
+<canvas
+id="canvas"
+width="800"
+height="500"> </canvas>
+
+</div>
+
+<div
+class="controlsText"
+id="controlsText">
+</div>
+
+<!-- CONTROLES TÁCTILES -->
+
+<div
+class="touchControls"
+id="touchControls">
+
+<div
+class="touchGrid"
+id="dpad">
+
+<button
+class="touchBtn empty">
+• </button>
+
+<button
+class="touchBtn"
+data-key="up">
+▲ </button>
+
+<button
+class="touchBtn empty">
+• </button>
+
+<button
+class="touchBtn"
+data-key="left">
+◀ </button>
+
+<button
+class="touchBtn"
+data-key="down">
+▼ </button>
+
+<button
+class="touchBtn"
+data-key="right">
+▶ </button>
+
+</div>
+
+<div class="actionRow">
+
+<button
+class="actionBtn"
+data-key="space">
+🚀 DISPARAR </button>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 <script>
+
 const games=[
-    {name:"Snake",cat:"Clásicos",icon:"🐍",type:"snake"},
-    {name:"Pong",cat:"Clásicos",icon:"🏓",type:"pong"},
-    {name:"Dodge",cat:"Arcade",icon:"💥",type:"dodge"},
-    {name:"Clicker",cat:"Puzzle",icon:"🖱️",type:"clicker"},
-    {name:"Space Shooter",cat:"Acción",icon:"🚀",type:"space"}
+
+{
+name:"Snake",
+cat:"Clásicos",
+icon:"🐍",
+type:"snake"
+},
+
+{
+name:"Pong",
+cat:"Clásicos",
+icon:"🏓",
+type:"pong"
+},
+
+{
+name:"Dodge",
+cat:"Arcade",
+icon:"💥",
+type:"dodge"
+},
+
+{
+name:"Clicker",
+cat:"Puzzle",
+icon:"🖱️",
+type:"clicker"
+},
+
+{
+name:"Space Shooter",
+cat:"Acción",
+icon:"🚀",
+type:"space"
+}
+
 ];
+
 
 const grid=document.getElementById("grid");
 const search=document.getElementById("search");
 const count=document.getElementById("count");
+
 const player=document.getElementById("player");
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
 
+const controlsText=
+document.getElementById("controlsText");
+
+const dpad=
+document.getElementById("dpad");
+
 let category="Todos";
 let animation=0;
-let keys={};
+
+let keys={
+    up:false,
+    down:false,
+    left:false,
+    right:false,
+    space:false
+};
+
+
+/* =========================
+   CATÁLOGO
+========================= */
 
 function render(){
-    const q=search.value.toLowerCase();
 
-    const result=games.filter(g=>
-        (category==="Todos"||g.cat===category)&&
-        g.name.toLowerCase().includes(q)
-    );
+    const q=
+        search.value.toLowerCase();
+
+    const result=
+        games.filter(g=>
+            (category==="Todos"||
+             g.cat===category)&&
+            g.name.toLowerCase().includes(q)
+        );
 
     grid.innerHTML="";
 
     result.forEach(g=>{
-        const card=document.createElement("article");
+
+        const card=
+        document.createElement("article");
+
         card.className="card";
 
         card.innerHTML=`
-            <div class="cover">${g.icon}</div>
+
+            <div class="cover">
+                ${g.icon}
+            </div>
+
             <div class="info">
+
                 <h3>${g.name}</h3>
-                <p>Juego HTML5 • Gratis</p>
-                <span class="tag">${g.cat}</span>
+
+                <p>
+                    HTML5 • PC + móvil
+                </p>
+
+                <span class="tag">
+                    ${g.cat}
+                </span>
+
             </div>
         `;
 
-        card.onclick=()=>openGame(g);
+        card.onclick=
+            ()=>openGame(g);
+
         grid.appendChild(card);
+
     });
 
-    count.textContent=result.length+" juegos";
+    count.textContent=
+        result.length+" juegos";
 }
+
+
+/* =========================
+   ABRIR
+========================= */
 
 function openGame(game){
+
     player.style.display="block";
-    document.getElementById("gameTitle").textContent=game.name;
+
+    document.getElementById(
+        "gameTitle"
+    ).textContent=game.name;
 
     cancelAnimationFrame(animation);
 
-    if(game.type==="snake") snake();
-    if(game.type==="pong") pong();
-    if(game.type==="dodge") dodge();
-    if(game.type==="clicker") clicker();
-    if(game.type==="space") space();
+    canvas.onclick=null;
+
+    if(game.type==="snake")snake();
+    if(game.type==="pong")pong();
+    if(game.type==="dodge")dodge();
+    if(game.type==="clicker")clicker();
+    if(game.type==="space")space();
 }
+
+
+/* =========================
+   CERRAR
+========================= */
 
 function closeGame(){
+
     player.style.display="none";
+
     cancelAnimationFrame(animation);
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    canvas.onclick=null;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    keys={
+        up:false,
+        down:false,
+        left:false,
+        right:false,
+        space:false
+    };
 }
 
-document.getElementById("close").onclick=closeGame;
+document
+.getElementById("close")
+.onclick=closeGame;
 
-document.addEventListener("keydown",e=>{
-    keys[e.key.toLowerCase()]=true;
 
-    if(e.key==="Escape") closeGame();
+/* =========================
+   TECLADO PC
+========================= */
+
+document.addEventListener(
+"keydown",
+e=>{
+
+    if(e.key==="ArrowUp"||
+       e.key.toLowerCase()==="w")
+        keys.up=true;
+
+    if(e.key==="ArrowDown"||
+       e.key.toLowerCase()==="s")
+        keys.down=true;
+
+    if(e.key==="ArrowLeft"||
+       e.key.toLowerCase()==="a")
+        keys.left=true;
+
+    if(e.key==="ArrowRight"||
+       e.key.toLowerCase()==="d")
+        keys.right=true;
+
+    if(e.code==="Space"){
+        e.preventDefault();
+        keys.space=true;
+    }
+
+    if(e.key==="Escape")
+        closeGame();
 });
 
-document.addEventListener("keyup",e=>{
-    keys[e.key.toLowerCase()]=false;
+
+document.addEventListener(
+"keyup",
+e=>{
+
+    if(e.key==="ArrowUp"||
+       e.key.toLowerCase()==="w")
+        keys.up=false;
+
+    if(e.key==="ArrowDown"||
+       e.key.toLowerCase()==="s")
+        keys.down=false;
+
+    if(e.key==="ArrowLeft"||
+       e.key.toLowerCase()==="a")
+        keys.left=false;
+
+    if(e.key==="ArrowRight"||
+       e.key.toLowerCase()==="d")
+        keys.right=false;
+
+    if(e.code==="Space")
+        keys.space=false;
 });
 
-search.addEventListener("input",render);
 
-document.querySelectorAll(".category").forEach(btn=>{
-    btn.onclick=()=>{
-        document.querySelectorAll(".category")
-            .forEach(x=>x.classList.remove("active"));
+/* =========================
+   TOUCH
+========================= */
 
-        btn.classList.add("active");
-        category=btn.dataset.cat;
-        render();
-    };
+document
+.querySelectorAll(
+".touchBtn,.actionBtn"
+)
+.forEach(button=>{
+
+    const key=button.dataset.key;
+
+    function press(e){
+        e.preventDefault();
+
+        if(key)
+            keys[key]=true;
+    }
+
+    function release(e){
+        e.preventDefault();
+
+        if(key)
+            keys[key]=false;
+    }
+
+    button.addEventListener(
+        "pointerdown",
+        press
+    );
+
+    button.addEventListener(
+        "pointerup",
+        release
+    );
+
+    button.addEventListener(
+        "pointercancel",
+        release
+    );
+
+    button.addEventListener(
+        "pointerleave",
+        release
+    );
+
 });
 
-/* SNAKE */
+
+/* =========================
+   SNAKE
+========================= */
 
 function snake(){
-    document.getElementById("controls").textContent=
-        "Flechas o WASD para moverte";
+
+    controlsText.textContent=
+        "PC: WASD/Flechas • Móvil: botones";
 
     let s=[
         {x:10,y:10},
@@ -356,23 +848,42 @@ function snake(){
     ];
 
     let food={
-        x:Math.floor(Math.random()*39),
-        y:Math.floor(Math.random()*24)
+        x:25,
+        y:15
     };
 
-    let dx=1,dy=0;
+    let dx=1;
+    let dy=0;
     let last=0;
 
     function loop(t){
-        animation=requestAnimationFrame(loop);
+
+        animation=
+            requestAnimationFrame(loop);
 
         if(t-last<100)return;
+
         last=t;
 
-        if(keys.arrowup||keys.w){dx=0;dy=-1}
-        if(keys.arrowdown||keys.s){dx=0;dy=1}
-        if(keys.arrowleft||keys.a){dx=-1;dy=0}
-        if(keys.arrowright||keys.d){dx=1;dy=0}
+        if(keys.up){
+            dx=0;
+            dy=-1;
+        }
+
+        if(keys.down){
+            dx=0;
+            dy=1;
+        }
+
+        if(keys.left){
+            dx=-1;
+            dy=0;
+        }
+
+        if(keys.right){
+            dx=1;
+            dy=0;
+        }
 
         const head={
             x:s[0].x+dx,
@@ -380,26 +891,39 @@ function snake(){
         };
 
         if(
-            head.x<0||head.x>=40||
-            head.y<0||head.y>=25||
-            s.some(p=>p.x===head.x&&p.y===head.y)
+            head.x<0||
+            head.x>=40||
+            head.y<0||
+            head.y>=25||
+            s.some(
+                p=>p.x===head.x&&p.y===head.y
+            )
         ){
+
             s=[
                 {x:10,y:10},
                 {x:9,y:10},
                 {x:8,y:10}
             ];
-            dx=1;dy=0;
+
+            dx=1;
+            dy=0;
+
             return;
         }
 
         s.unshift(head);
 
-        if(head.x===food.x&&head.y===food.y){
+        if(
+            head.x===food.x&&
+            head.y===food.y
+        ){
+
             food={
                 x:Math.floor(Math.random()*40),
                 y:Math.floor(Math.random()*25)
             };
+
         }else{
             s.pop();
         }
@@ -408,50 +932,82 @@ function snake(){
         ctx.fillRect(0,0,800,500);
 
         ctx.fillStyle="#00eaff";
-        s.forEach(p=>ctx.fillRect(p.x*20,p.y*20,18,18));
+
+        s.forEach(p=>
+            ctx.fillRect(
+                p.x*20,
+                p.y*20,
+                18,
+                18
+            )
+        );
 
         ctx.fillStyle="#ff4050";
-        ctx.fillRect(food.x*20,food.y*20,18,18);
+
+        ctx.fillRect(
+            food.x*20,
+            food.y*20,
+            18,
+            18
+        );
     }
 
     loop(0);
 }
 
-/* PONG */
+
+/* =========================
+   PONG
+========================= */
 
 function pong(){
-    document.getElementById("controls").textContent=
-        "W/S para mover tu pala";
+
+    controlsText.textContent=
+        "PC: W/S • Móvil: ▲/▼";
 
     let py=210;
-    let by=240,bx=400;
-    let vx=5,vy=4;
+    let by=240;
+    let bx=400;
+
+    let vx=5;
+    let vy=4;
 
     function loop(){
-        animation=requestAnimationFrame(loop);
 
-        if(keys.w)py-=7;
-        if(keys.s)py+=7;
+        animation=
+            requestAnimationFrame(loop);
 
-        py=Math.max(0,Math.min(420,py));
+        if(keys.up)py-=7;
+        if(keys.down)py+=7;
+
+        py=Math.max(
+            0,
+            Math.min(420,py)
+        );
 
         bx+=vx;
         by+=vy;
 
-        if(by<0||by>480)vy*=-1;
+        if(by<0||by>480)
+            vy*=-1;
 
         if(
-            bx<45 &&
-            by>py &&
+            bx<45&&
+            by>py&&
             by<py+80
-        )vx=Math.abs(vx);
+        ){
+            vx=Math.abs(vx);
+        }
 
-        if(bx>755)vx=-Math.abs(vx);
+        if(bx>755)
+            vx=-Math.abs(vx);
 
         if(bx<0){
+
             bx=400;
             by=240;
             vx=5;
+
         }
 
         ctx.fillStyle="#05070b";
@@ -464,40 +1020,65 @@ function pong(){
         ctx.fillRect(760,240,20,80);
 
         ctx.beginPath();
-        ctx.arc(bx,by,10,0,Math.PI*2);
+
+        ctx.arc(
+            bx,
+            by,
+            10,
+            0,
+            Math.PI*2
+        );
+
         ctx.fill();
     }
 
     loop();
 }
 
-/* DODGE */
+
+/* =========================
+   DODGE
+========================= */
 
 function dodge(){
-    document.getElementById("controls").textContent=
-        "A/D o ←/→ para esquivar";
+
+    controlsText.textContent=
+        "PC: A/D • Móvil: ◀/▶";
 
     let x=380;
     let blocks=[];
 
     function loop(){
-        animation=requestAnimationFrame(loop);
 
-        if(keys.a||keys.arrowleft)x-=7;
-        if(keys.d||keys.arrowright)x+=7;
+        animation=
+            requestAnimationFrame(loop);
 
-        x=Math.max(0,Math.min(760,x));
+        if(keys.left)x-=7;
+        if(keys.right)x+=7;
+
+        x=Math.max(
+            0,
+            Math.min(760,x)
+        );
 
         if(Math.random()<.025){
+
             blocks.push({
                 x:Math.random()*780,
                 y:-20,
                 speed:3+Math.random()*4
             });
+
         }
 
-        blocks.forEach(b=>b.y+=b.speed);
-        blocks=blocks.filter(b=>b.y<520);
+        blocks.forEach(
+            b=>b.y+=b.speed
+        );
+
+        blocks=
+            blocks.filter(
+                b=>b.y<520
+            );
 
         ctx.fillStyle="#05070b";
         ctx.fillRect(0,0,800,500);
@@ -507,108 +1088,184 @@ function dodge(){
 
         ctx.fillStyle="#ff4050";
 
-        blocks.forEach(b=>{
-            ctx.fillRect(b.x,b.y,25,25);
-        });
+        blocks.forEach(
+            b=>ctx.fillRect(
+                b.x,b.y,25,25
+            )
+        );
     }
 
     loop();
 }
 
-/* CLICKER */
+
+/* =========================
+   CLICKER
+========================= */
 
 function clicker(){
-    document.getElementById("controls").textContent=
-        "Haz clic en el círculo";
+
+    controlsText.textContent=
+        "Toca el círculo para conseguir puntos";
 
     let score=0;
 
     function draw(){
+
         ctx.fillStyle="#05070b";
         ctx.fillRect(0,0,800,500);
 
         ctx.fillStyle="#fff";
+
         ctx.font="30px Arial";
-        ctx.fillText("Puntos: "+score,30,50);
+
+        ctx.fillText(
+            "Puntos: "+score,
+            30,
+            50
+        );
 
         ctx.fillStyle="#00eaff";
+
         ctx.beginPath();
-        ctx.arc(400,250,70,0,Math.PI*2);
+
+        ctx.arc(
+            400,
+            250,
+            70,
+            0,
+            Math.PI*2
+        );
+
         ctx.fill();
     }
 
-    canvas.onclick=function(e){
-        const r=canvas.getBoundingClientRect();
+    canvas.onclick=e=>{
 
-        const x=(e.clientX-r.left)*canvas.width/r.width;
-        const y=(e.clientY-r.top)*canvas.height/r.height;
+        const r=
+            canvas.getBoundingClientRect();
 
-        if(Math.hypot(x-400,y-250)<70){
+        const x=
+            (e.clientX-r.left)*
+            canvas.width/r.width;
+
+        const y=
+            (e.clientY-r.top)*
+            canvas.height/r.height;
+
+        if(
+            Math.hypot(
+                x-400,
+                y-250
+            )<70
+        ){
+
             score++;
+
             draw();
+
         }
+
     };
 
     draw();
 }
 
-/* SPACE SHOOTER */
+
+/* =========================
+   SPACE SHOOTER
+========================= */
 
 function space(){
-    document.getElementById("controls").textContent=
-        "A/D o ←/→ para moverte • ESPACIO para disparar";
+
+    controlsText.textContent=
+        "PC: A/D + ESPACIO • Móvil: ◀/▶ + DISPARAR";
 
     let x=380;
     let bullets=[];
     let enemies=[];
 
     function loop(){
-        animation=requestAnimationFrame(loop);
 
-        if(keys.a||keys.arrowleft)x-=6;
-        if(keys.d||keys.arrowright)x+=6;
+        animation=
+            requestAnimationFrame(loop);
 
-        x=Math.max(0,Math.min(760,x));
+        if(keys.left)x-=6;
+        if(keys.right)x+=6;
 
-        if(keys[" "]&&Math.random()<.15){
+        x=Math.max(
+            0,
+            Math.min(760,x)
+        );
+
+        if(
+            keys.space&&
+            Math.random()<.15
+        ){
+
             bullets.push({
                 x:x+18,
                 y:450
             });
+
         }
 
-        bullets.forEach(b=>b.y-=8);
+        bullets.forEach(
+            b=>b.y-=8
+        );
 
         if(Math.random()<.025){
+
             enemies.push({
                 x:Math.random()*760,
                 y:-20
             });
+
         }
 
-        enemies.forEach(e=>e.y+=3);
+        enemies.forEach(
+            e=>e.y+=3
+        );
 
-        for(let i=enemies.length-1;i>=0;i--){
-            for(let j=bullets.length-1;j>=0;j--){
+        for(
+            let i=enemies.length-1;
+            i>=0;
+            i--
+        ){
+
+            for(
+                let j=bullets.length-1;
+                j>=0;
+                j--
+            ){
 
                 const e=enemies[i];
                 const b=bullets[j];
 
                 if(
-                    b.x>e.x &&
-                    b.x<e.x+30 &&
-                    b.y>e.y &&
+                    b.x>e.x&&
+                    b.x<e.x+30&&
+                    b.y>e.y&&
                     b.y<e.y+30
                 ){
+
                     enemies.splice(i,1);
                     bullets.splice(j,1);
+
                     break;
                 }
             }
         }
 
-        bullets=bullets.filter(b=>b.y>-20);
-        enemies=enemies.filter(e=>e.y<520);
+        bullets=
+            bullets.filter(
+                b=>b.y>-20
+            );
+
+        enemies=
+            enemies.filter(
+                e=>e.y<520
+            );
 
         ctx.fillStyle="#05070b";
         ctx.fillRect(0,0,800,500);
@@ -617,20 +1274,32 @@ function space(){
         ctx.fillRect(x,450,40,25);
 
         ctx.fillStyle="#fff";
-        bullets.forEach(b=>
-            ctx.fillRect(b.x,b.y,4,14)
+
+        bullets.forEach(
+            b=>ctx.fillRect(
+                b.x,b.y,4,14
+            )
         );
 
         ctx.fillStyle="#ff4050";
-        enemies.forEach(e=>
-            ctx.fillRect(e.x,e.y,30,30)
+
+        enemies.forEach(
+            e=>ctx.fillRect(
+                e.x,e.y,30,30
+            )
         );
     }
 
     loop();
 }
 
+
+/* =========================
+   INICIAR
+========================= */
+
 render();
+
 </script>
 
 </body>
