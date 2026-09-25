@@ -1,313 +1,599 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Retroyer — 100 juegos únicos</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:#070a11;color:#fff}
-body{overflow-x:hidden}button,input{font:inherit}
-header{position:sticky;top:0;z-index:20;background:#0b101af2;backdrop-filter:blur(15px);border-bottom:1px solid #202b3d}
-.nav,.hero,.categories,.content{max-width:1400px;margin:auto}.nav{padding:15px 20px;display:flex;align-items:center;gap:20px}
-.logo{font-size:28px;font-weight:900;color:#00eaff}.logo span{color:#fff}.search{flex:1}
-.search input{width:100%;padding:13px 17px;border-radius:12px;border:1px solid #29364b;background:#111722;color:#fff;outline:0}
-.search input:focus{border-color:#00eaff}.hero{margin-top:25px;padding:55px 30px;border-radius:22px;background:radial-gradient(circle at 80% 20%,#0066ff55,transparent 35%),radial-gradient(circle at 20% 80%,#00eaff25,transparent 35%),#101827}
-.hero h1{font-size:clamp(40px,7vw,75px);margin:0 0 10px}.hero h1 span{color:#00eaff}.hero p{color:#98a6bb;font-size:18px}
-.categories{padding:0 20px 25px;display:flex;gap:9px;overflow-x:auto}.category{border:1px solid #29364b;background:#111722;color:#aab7c9;border-radius:30px;padding:10px 16px;cursor:pointer;white-space:nowrap}
-.category.active,.category:hover{background:#00eaff;color:#001014}.content{padding:0 20px 50px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-#count{color:#748197}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
-.card{background:#111722;border:1px solid #202c3e;border-radius:15px;overflow:hidden;cursor:pointer;transition:.2s}.card:hover{transform:translateY(-5px);border-color:#00eaff}
-.cover{height:125px;display:grid;place-items:center;font-size:55px;background:linear-gradient(135deg,#16253b,#0b1019)}.info{padding:13px}.info h3{margin:0}.info p{margin:7px 0 0;color:#718098;font-size:13px}
-.tag{display:inline-block;margin-top:9px;padding:4px 8px;border-radius:6px;background:#1a2638;color:#91a3bd;font-size:11px}
-#player{display:none;position:fixed;inset:0;z-index:100;background:#05070c;padding:10px}.playerBox{width:min(1100px,100%);height:100%;margin:auto;display:flex;flex-direction:column}
-.playerHead{min-height:48px;display:flex;justify-content:space-between;align-items:center}.close{border:0;border-radius:9px;background:#1b2535;color:#fff;padding:9px 15px;cursor:pointer}
-.gameCanvas{flex:1;min-height:0;display:flex;justify-content:center;align-items:center}
-canvas{width:min(800px,100%);height:auto;aspect-ratio:800/500;background:#05070b;border:1px solid #27354a;border-radius:12px;touch-action:none}
-.controlsText{text-align:center;padding:7px;color:#8391a6;font-size:13px}
-.touchControls{display:none;width:min(420px,100%);margin:auto;padding:8px 5px 12px;user-select:none}
-.touchGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:230px;margin:auto}.touchBtn,.actionBtn{min-height:58px;border:1px solid #34445c;border-radius:14px;background:#172236;color:#fff;font-size:25px;cursor:pointer;touch-action:none}
-.touchBtn:active,.actionBtn:active{background:#00eaff;color:#001014}.touchBtn.empty{visibility:hidden}.actionRow{display:flex;justify-content:center;margin-top:8px}.actionBtn{min-width:130px}
-@media(max-width:700px){header{position:relative}.nav{flex-wrap:wrap;padding:12px}.logo{width:100%}.hero{margin:15px 10px;padding:35px 20px}.hero p{font-size:15px}.content,.categories{padding-left:10px;padding-right:10px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.cover{height:95px;font-size:43px}.info{padding:10px}.info h3{font-size:14px}.gameCanvas{flex:none;width:100%}.touchControls{display:block}#player{padding:5px}.controlsText{font-size:11px}}
-@media(min-width:701px){.touchControls{display:none!important}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Retroyer — Juegos Retro</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0b12;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           BANNER DECO
+        ========================= */
+
+        .retroyer-banner {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+
+            background: #111;
+
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .retroyer-banner iframe {
+            width: 100%;
+            height: 100%;
+
+            border: none;
+            display: block;
+
+            overflow: hidden;
+        }
+
+        /* Oscurece ligeramente los bordes */
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0.05),
+                    rgba(0, 0, 0, 0.25)
+                );
+        }
+
+        /* =========================
+           CONTENIDO
+        ========================= */
+
+        main {
+            width: min(1200px, 94%);
+            margin: 35px auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .hero h1 {
+            font-size: clamp(35px, 7vw, 70px);
+            font-weight: 900;
+            letter-spacing: -3px;
+        }
+
+        .hero h1 span {
+            color: #ffcc33;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        /* =========================
+           BUSCADOR
+        ========================= */
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+
+            max-width: 700px;
+            margin: 0 auto 35px;
+        }
+
+        .search-box input {
+            flex: 1;
+
+            padding: 15px 18px;
+
+            border: 1px solid #292936;
+            border-radius: 14px;
+
+            outline: none;
+
+            background: #151520;
+            color: white;
+
+            font-size: 16px;
+        }
+
+        .search-box input:focus {
+            border-color: #ffcc33;
+        }
+
+        .search-box button {
+            padding: 0 22px;
+
+            border: none;
+            border-radius: 14px;
+
+            background: #ffcc33;
+            color: #111;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           CATEGORÍAS
+        ========================= */
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+
+            margin-bottom: 35px;
+        }
+
+        .category {
+            padding: 10px 16px;
+
+            border: 1px solid #292936;
+            border-radius: 999px;
+
+            background: #151520;
+            color: #ddd;
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .category:hover,
+        .category.active {
+            background: #ffcc33;
+            color: #111;
+            border-color: #ffcc33;
+        }
+
+        /* =========================
+           JUEGOS
+        ========================= */
+
+        .games {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(190px, 1fr));
+
+            gap: 18px;
+        }
+
+        .game {
+            background: #151520;
+
+            border: 1px solid #292936;
+            border-radius: 18px;
+
+            padding: 15px;
+
+            transition: 0.2s;
+
+            cursor: pointer;
+        }
+
+        .game:hover {
+            transform: translateY(-5px);
+
+            border-color: #ffcc33;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .game-image {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #27273a,
+                    #101018
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 45px;
+
+            margin-bottom: 12px;
+        }
+
+        .game h3 {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .game p {
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 40px 20px;
+
+            margin-top: 50px;
+
+            color: #777;
+
+            border-top: 1px solid #20202b;
+        }
+
+        footer strong {
+            color: #ffcc33;
+        }
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .retroyer-banner {
+                height: 180px;
+                border-radius: 0 0 18px 18px;
+            }
+
+            main {
+                width: 92%;
+                margin-top: 25px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                height: 48px;
+            }
+
+            .games {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+                gap: 12px;
+            }
+
+            .game {
+                padding: 10px;
+                border-radius: 14px;
+            }
+
+            .game h3 {
+                font-size: 14px;
+            }
+
+            .game p {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .games {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<header><div class="nav"><div class="logo">RETRO<span>YER</span></div><div class="search"><input id="search" placeholder="🔎 Buscar juegos..." aria-label="Buscar juegos"></div></div></header>
-<section class="hero"><h1>Juega <span>sin límites.</span></h1><p>100 juegos HTML5 con nombres y mecánicas únicas para PC y móvil.</p></section>
-<div class="categories">
-<button class="category active" data-cat="Todos">🔥 Todos</button>
-<button class="category" data-cat="Arcade">🕹️ Arcade</button><button class="category" data-cat="Acción">⚡ Acción</button>
-<button class="category" data-cat="Puzzle">🧩 Puzzle</button><button class="category" data-cat="Clásicos">👾 Clásicos</button>
-</div>
-<main class="content"><div class="top"><h2>🎮 Juegos</h2><span id="count"></span></div><div class="grid" id="grid"></div></main>
 
-<div id="player"><div class="playerBox"><div class="playerHead"><strong id="gameTitle">Juego</strong><button class="close" id="close">✕ Cerrar</button></div>
-<div class="gameCanvas"><canvas id="canvas" width="800" height="500"></canvas></div>
-<div class="controlsText" id="controlsText"></div>
-<div class="touchControls"><div class="touchGrid">
-<button class="touchBtn empty">•</button><button class="touchBtn" data-key="up">▲</button><button class="touchBtn empty">•</button>
-<button class="touchBtn" data-key="left">◀</button><button class="touchBtn" data-key="down">▼</button><button class="touchBtn" data-key="right">▶</button>
-</div><div class="actionRow"><button class="actionBtn" data-key="space">🚀 ACCIÓN</button></div></div></div></div>
+    <!-- =================================
+         BANNER DECO CANDY
+    ================================== -->
 
-<script>
-const games = [
-{id:1,name:'Astro Clash',desc:'Destruye meteoritos antes de que lleguen al planeta.',mode:'arcade',icon:'🚀'},
-{id:2,name:'Neon Drift',desc:'Mantén el auto en la pista mientras la carretera cambia.',mode:'racer',icon:'⚡'},
-{id:3,name:'Pixel Pursuit',desc:'Persigue al objetivo que aparece en distintas zonas.',mode:'hunt',icon:'🧩'},
-{id:4,name:'Turbo Circuit',desc:'Supera vueltas evitando obstáculos móviles.',mode:'racer2',icon:'🏎️'},
-{id:5,name:'Cosmic Vault',desc:'Recoge cristales en una nave con combustible limitado.',mode:'fuel',icon:'👾'},
-{id:6,name:'Jungle Dash',desc:'Corre por la selva y salta sobre trampas.',mode:'runner',icon:'💎'},
-{id:7,name:'Sky Runner',desc:'Cambia de carril para atravesar plataformas flotantes.',mode:'lanes',icon:'🔥'},
-{id:8,name:'Block Breaker',desc:'Rompe bloques y evita que la pelota caiga.',mode:'brick',icon:'🎮'},
-{id:9,name:'Rocket Raid',desc:'Derriba oleadas de naves enemigas.',mode:'shooter',icon:'🚀'},
-{id:10,name:'Marble Quest',desc:'Lleva una esfera hasta la meta sin tocar paredes.',mode:'maze',icon:'⚡'},
-{id:11,name:'Crystal Storm',desc:'Atrapa cristales buenos y evita los rojos.',mode:'catch',icon:'🧩'},
-{id:12,name:'Forest Hop',desc:'Salta entre troncos que se mueven.',mode:'hopper',icon:'🏎️'},
-{id:13,name:'Flash Frenzy',desc:'Pulsa el objetivo luminoso antes de que cambie.',mode:'reflex',icon:'👾'},
-{id:14,name:'Lunar Echo',desc:'Repite una secuencia de direcciones.',mode:'memory',icon:'💎'},
-{id:15,name:'Solar Sprint',desc:'Llega a la meta antes de que termine el temporizador.',mode:'timer',icon:'🔥'},
-{id:16,name:'Deep Dive',desc:'Baja por una cueva recogiendo oxígeno.',mode:'dive',icon:'🎮'},
-{id:17,name:'Rainbow Grid',desc:'Conecta casillas del mismo color.',mode:'connect',icon:'🚀'},
-{id:18,name:'Pirate Panic',desc:'Protege tu barco de proyectiles desde ambos lados.',mode:'defense',icon:'⚡'},
-{id:19,name:'Robot Run',desc:'Guía un robot por un campo de minas.',mode:'mines',icon:'🧩'},
-{id:20,name:'Bomb Bouncer',desc:'Haz rebotar una bomba sin dejar que toque el suelo.',mode:'bounce',icon:'🏎️'},
-{id:21,name:'Gem Hunter',desc:'Encuentra gemas ocultas con pistas de distancia.',mode:'finder',icon:'👾'},
-{id:22,name:'Orbit Leap',desc:'Salta de planeta en planeta siguiendo sus órbitas.',mode:'orbit',icon:'💎'},
-{id:23,name:'Mountain Dash',desc:'Sube una montaña evitando rocas que caen.',mode:'climb',icon:'🔥'},
-{id:24,name:'Night Shift',desc:'Mantén encendidas las luces de un edificio.',mode:'lights',icon:'🎮'},
-{id:25,name:'Pirate Harbor',desc:'Atraca barcos en los muelles correctos.',mode:'dock',icon:'🚀'},
-{id:26,name:'Echo Runner',desc:'Corre siguiendo una ruta que aparece por instantes.',mode:'route',icon:'⚡'},
-{id:27,name:'Cyber Sprint',desc:'Hackea nodos en orden antes de que se reinicien.',mode:'nodes',icon:'🧩'},
-{id:28,name:'Steel Storm',desc:'Esquiva piezas metálicas que caen.',mode:'rain',icon:'🏎️'},
-{id:29,name:'Mini Mayhem',desc:'Sobrevive a una arena con enemigos que rebotan.',mode:'arena',icon:'👾'},
-{id:30,name:'Catapult Quest',desc:'Calcula el ángulo para alcanzar objetivos.',mode:'angle',icon:'💎'},
-{id:31,name:'Piston Panic',desc:'Cruza pistones alternando el momento correcto.',mode:'timing',icon:'🔥'},
-{id:32,name:'Time Tunnel',desc:'Cambia entre dos líneas temporales para evitar barreras.',mode:'timeline',icon:'🎮'},
-{id:33,name:'Frost Glide',desc:'Deslízate sobre hielo hasta detenerte en la zona segura.',mode:'ice',icon:'🚀'},
-{id:34,name:'Sunset Rush',desc:'Recoge soles mientras el horizonte avanza.',mode:'sun',icon:'⚡'},
-{id:35,name:'Danger Pulse',desc:'Cruza pulsos eléctricos cuando se apaguen.',mode:'pulse',icon:'🧩'},
-{id:36,name:'Prism Shift',desc:'Cambia de color para atravesar puertas del mismo color.',mode:'color',icon:'🏎️'},
-{id:37,name:'Domino Drift',desc:'Coloca fichas para completar una cadena.',mode:'domino',icon:'👾'},
-{id:38,name:'Moon Beam',desc:'Refleja un rayo hasta el cristal final.',mode:'mirror',icon:'💎'},
-{id:39,name:'Hyper Burst',desc:'Carga energía y libera un impulso para superar obstáculos.',mode:'boost',icon:'🔥'},
-{id:40,name:'Orbit Rally',desc:'Compite contra un rival alrededor de planetas.',mode:'orbitrace',icon:'🎮'},
-{id:41,name:'Magnetic Maze',desc:'Cambia la polaridad para atraer o repeler tu pieza.',mode:'magnet',icon:'🚀'},
-{id:42,name:'Star Harbor',desc:'Ordena naves según sus señales de llegada.',mode:'sort',icon:'⚡'},
-{id:43,name:'Dark Circuit',desc:'Enciende un circuito conectando interruptores.',mode:'circuit',icon:'🧩'},
-{id:44,name:'Firestorm',desc:'Protege una base de bolas de fuego.',mode:'base',icon:'🏎️'},
-{id:45,name:'Wild Pattern',desc:'Identifica qué símbolo rompe el patrón.',mode:'odd',icon:'👾'},
-{id:46,name:'Candy Blitz',desc:'Agrupa caramelos iguales antes de que se llene el tablero.',mode:'match',icon:'💎'},
-{id:47,name:'Pixel Punch',desc:'Golpea objetivos que aparecen en nueve posiciones.',mode:'whack',icon:'🔥'},
-{id:48,name:'Comet Chase',desc:'Persigue un cometa sin tocar su estela.',mode:'chase',icon:'🎮'},
-{id:49,name:'Rescue Rover',desc:'Lleva un rover hasta cada señal de rescate.',mode:'rescue',icon:'🚀'},
-{id:50,name:'Rainbow Quest',desc:'Recoge colores en el orden indicado.',mode:'order',icon:'⚡'},
-{id:51,name:'Ninja Flip',desc:'Salta y cambia de dirección en el aire.',mode:'flip',icon:'🧩'},
-{id:52,name:'Thunder Loop',desc:'Atraviesa un circuito mientras cae un rayo periódicamente.',mode:'storm',icon:'🏎️'},
-{id:53,name:'Desert Drift',desc:'Esquiva cactus y recoge combustible.',mode:'desert',icon:'👾'},
-{id:54,name:'Galaxy Spin',desc:'Rota una plataforma para mantener una bola dentro.',mode:'rotate',icon:'💎'},
-{id:55,name:'Shadow Path',desc:'Sigue una sombra que muestra el camino correcto.',mode:'shadow',icon:'🔥'},
-{id:56,name:'Prism Portal',desc:'Entra por el portal que coincide con el símbolo.',mode:'portal',icon:'🎮'},
-{id:57,name:'Ice Vector',desc:'Elige una dirección y deslízate hasta una pared.',mode:'vector',icon:'🚀'},
-{id:58,name:'Jungle Runner',desc:'Cambia entre suelo y ramas para evitar animales.',mode:'jungle',icon:'⚡'},
-{id:59,name:'Cave Sprint',desc:'Corre por una cueva que se va cerrando.',mode:'cave',icon:'🧩'},
-{id:60,name:'Signal Surge',desc:'Memoriza señales y actívalas en el mismo orden.',mode:'signal',icon:'🏎️'},
-{id:61,name:'Rocket Flip',desc:'Gira el cohete para aterrizar verticalmente.',mode:'landing',icon:'👾'},
-{id:62,name:'Monster Chase',desc:'Sobrevive a un monstruo que aprende tu ruta.',mode:'monster',icon:'💎'},
-{id:63,name:'Light Sprint',desc:'Corre entre zonas iluminadas antes de que se apaguen.',mode:'light',icon:'🔥'},
-{id:64,name:'River Rush',desc:'Controla una balsa entre rocas y remolinos.',mode:'river',icon:'🎮'},
-{id:65,name:'Planet Hopper',desc:'Salta usando la gravedad de planetas pequeños.',mode:'gravity',icon:'🚀'},
-{id:66,name:'Turbo Pistol',desc:'Dispara a blancos móviles sin desperdiciar munición.',mode:'target',icon:'⚡'},
-{id:67,name:'Snowbound',desc:'Empuja bloques de nieve para abrir un camino.',mode:'push',icon:'🧩'},
-{id:68,name:'Color Break',desc:'Rompe solamente los bloques del color solicitado.',mode:'colorbreak',icon:'🏎️'},
-{id:69,name:'Dragon Dive',desc:'Baja con un dragón y atraviesa anillos.',mode:'rings',icon:'👾'},
-{id:70,name:'Neon Orbit',desc:'Mantén una nave dentro de un anillo que gira.',mode:'ringorbit',icon:'💎'},
-{id:71,name:'Bubble Burst',desc:'Revienta burbujas en orden ascendente.',mode:'bubbles',icon:'🔥'},
-{id:72,name:'Stone Run',desc:'Encuentra el camino estable entre piedras que desaparecen.',mode:'stones',icon:'🎮'},
-{id:73,name:'Hyper Hopper',desc:'Salta automáticamente y recoge potenciadores.',mode:'jumper',icon:'🚀'},
-{id:74,name:'Crystal Runner',desc:'Corre por cristales que forman plataformas temporales.',mode:'crun',icon:'⚡'},
-{id:75,name:'Storm Cruiser',desc:'Navega entre olas y evita relámpagos.',mode:'cruiser',icon:'🧩'},
-{id:76,name:'Micro Arena',desc:'Captura la bandera antes que el bot.',mode:'flag',icon:'🏎️'},
-{id:77,name:'Titan Pulse',desc:'Golpea los puntos débiles de un titán.',mode:'boss',icon:'👾'},
-{id:78,name:'Escape Park',desc:'Encuentra la salida de un parque con puertas cambiantes.',mode:'escape',icon:'💎'},
-{id:79,name:'Paper Trail',desc:'Dibuja un camino sin cruzar tu propia línea.',mode:'draw',icon:'🔥'},
-{id:80,name:'Frost Fury',desc:'Mantén una llama viva recogiendo leña.',mode:'warm',icon:'🎮'},
-{id:81,name:'Puzzle Pulse',desc:'Resuelve una secuencia de pulsos con tiempo limitado.',mode:'sequence',icon:'🚀'},
-{id:82,name:'Lantern Dash',desc:'Lleva una linterna por una zona oscura sin apagarla.',mode:'lantern',icon:'⚡'},
-{id:83,name:'Blue Orbit',desc:'Mantén un satélite en su órbita ajustando velocidad.',mode:'satellite',icon:'🧩'},
-{id:84,name:'Steel Wave',desc:'Sobrevive a ondas de acero que cruzan la pantalla.',mode:'wave',icon:'🏎️'},
-{id:85,name:'Silver Drift',desc:'Desliza una pieza hasta los objetivos plateados.',mode:'slide',icon:'👾'},
-{id:86,name:'Jungle Circuit',desc:'Completa un circuito de interruptores en el orden correcto.',mode:'switches',icon:'💎'},
-{id:87,name:'Neon Nova',desc:'Carga una nova recogiendo partículas del mismo tipo.',mode:'nova',icon:'🔥'},
-{id:88,name:'Solar Runner',desc:'Evita zonas solares mientras buscas portales seguros.',mode:'solar',icon:'🎮'},
-{id:89,name:'Cosmic Sparks',desc:'Une chispas sin dejar que las líneas se crucen.',mode:'sparks',icon:'🚀'},
-{id:90,name:'Turbo Trail',desc:'Sigue huellas de velocidad y supera tres checkpoints.',mode:'checkpoint',icon:'⚡'},
-{id:91,name:'Moon Circuit',desc:'Completa un circuito lunar con gravedad reducida.',mode:'moonrace',icon:'🧩'},
-{id:92,name:'Dragon Rift',desc:'Cierra grietas recogiendo runas en secuencia.',mode:'rifts',icon:'🏎️'},
-{id:93,name:'Prism Runner',desc:'Cambia de carril según el color del portal.',mode:'prun',icon:'👾'},
-{id:94,name:'Pixel Harbor',desc:'Organiza contenedores según sus símbolos.',mode:'containers',icon:'💎'},
-{id:95,name:'Rocket Lotus',desc:'Abre flores espaciales golpeando sus pétalos en orden.',mode:'lotus',icon:'🔥'},
-{id:96,name:'Mirage Run',desc:'Distingue plataformas reales de ilusiones.',mode:'mirage',icon:'🎮'},
-{id:97,name:'Storm Gate',desc:'Abre una puerta activando cuatro generadores.',mode:'generators',icon:'🚀'},
-{id:98,name:'Luna Drift',desc:'Controla un vehículo lunar en curvas cerradas.',mode:'lunarcar',icon:'⚡'},
-{id:99,name:'Velocity Run',desc:'Mantén una velocidad objetivo evitando aceleradores malos.',mode:'velocity',icon:'🧩'},
-{id:100,name:'Thunder Drift',desc:'Derrapa alrededor de zonas eléctricas y cruza la meta.',mode:'thunder',icon:'🏎️'}
-];
+    <section class="retroyer-banner">
 
-const grid=document.getElementById('grid'),search=document.getElementById('search'),count=document.getElementById('count'),
-player=document.getElementById('player'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),
-controls=document.getElementById('controlsText');
-let category='Todos',animation=0,keys={up:false,down:false,left:false,right:false,space:false},current=null;
+        <iframe
+            src="https://retroyer.com/echo/deco?name=candy"
+            title="Retroyer Candy Deco"
+            loading="eager"
+            scrolling="no">
+        </iframe>
 
-function render(){
- const q=search.value.trim().toLowerCase();
- const result=games.filter(g=>g.name.toLowerCase().includes(q));
- grid.innerHTML='';
- result.forEach(g=>{
-  const card=document.createElement('article');card.className='card';
-  card.innerHTML=`<div class="cover">${g.icon}</div><div class="info"><h3>${g.name}</h3><p>${g.desc}</p><span class="tag">Juego único #${g.id}</span></div>`;
-  card.onclick=()=>openGame(g);grid.appendChild(card);
- });
- count.textContent=`${result.length} de ${games.length} juegos`;
-}
+        <div class="banner-overlay"></div>
 
-function openGame(g){
- player.style.display='block';current=g;
- document.getElementById('gameTitle').textContent=g.name;
- cancelAnimationFrame(animation);canvas.onclick=null;
- startGame(g);
-}
+    </section>
 
-function closeGame(){
- player.style.display='none';cancelAnimationFrame(animation);canvas.onclick=null;
- ctx.clearRect(0,0,800,500);keys={up:false,down:false,left:false,right:false,space:false};
-}
-document.getElementById('close').onclick=closeGame;
 
-document.addEventListener('keydown',e=>{
- const k=e.key.toLowerCase();
- if(e.key==='ArrowUp'||k==='w')keys.up=true;if(e.key==='ArrowDown'||k==='s')keys.down=true;
- if(e.key==='ArrowLeft'||k==='a')keys.left=true;if(e.key==='ArrowRight'||k==='d')keys.right=true;
- if(e.code==='Space'){e.preventDefault();keys.space=true}if(e.key==='Escape')closeGame();
-});
-document.addEventListener('keyup',e=>{
- const k=e.key.toLowerCase();
- if(e.key==='ArrowUp'||k==='w')keys.up=false;if(e.key==='ArrowDown'||k==='s')keys.down=false;
- if(e.key==='ArrowLeft'||k==='a')keys.left=false;if(e.key==='ArrowRight'||k==='d')keys.right=false;
- if(e.code==='Space')keys.space=false;
-});
-document.querySelectorAll('.touchBtn,.actionBtn').forEach(b=>{
- const k=b.dataset.key,down=e=>{e.preventDefault();if(k)keys[k]=true},up=e=>{e.preventDefault();if(k)keys[k]=false};
- b.addEventListener('pointerdown',down);['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,up));
-});
+    <!-- =================================
+         CONTENIDO PRINCIPAL
+    ================================== -->
 
-function startGame(g){
- const mode=g.mode, W=800,H=500;
- let x=400,y=400,score=0,t=0,objects=[],goal=null,vel=0,angle=0;
- const colors=['#00eaff','#ff4050','#ffd84a','#72ff7a','#a878ff','#ff7ad9'];
+    <main>
 
- function clear(){ctx.fillStyle='#05070b';ctx.fillRect(0,0,W,H)}
- function text(s,x,y,size=24){ctx.fillStyle='#fff';ctx.font=size+'px Arial';ctx.fillText(s,x,y)}
- function circle(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
- function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
- function dist(a,b,c,d){return Math.hypot(a-c,b-d)}
- function rand(n){return Math.random()*n}
+        <section class="hero">
 
- controls.textContent='PC: WASD/Flechas + ESPACIO • Móvil: botones';
+            <h1>
+                RETRO<span>YER</span>
+            </h1>
 
- // Each mode below has its own rule/objective.
- function loop(){
-  animation=requestAnimationFrame(loop);t++;
-  clear();
+            <p>
+                Juegos retro, clásicos y mucho más.
+            </p>
 
-  if(mode==='arcade'||mode==='shooter'){
-   if(keys.left)x-=5;if(keys.right)x+=5;x=Math.max(20,Math.min(780,x));
-   if(t%35===0)objects.push({x:rand(760)+20,y:-20,v:2+rand(3)});
-   objects.forEach(o=>{o.y+=o.v;circle(o.x,o.y,12,'#ff4050')});
-   rect(x-20,450,40,25,'#00eaff');
-   objects=objects.filter(o=>o.y<530);
-   text('Puntos: '+score,20,35); if(keys.space&&t%10===0)score++;
-  } else if(mode==='racer'||mode==='racer2'||mode==='desert'||mode==='lunarcar'){
-   x=400+Math.sin(t/30)*170;if(keys.left)x-=4;if(keys.right)x+=4;
-   rect(x-22,420,44,60,'#00eaff');
-   for(let i=0;i<8;i++){let yy=(i*80+t*5)%560-60;rect(200+(i%3)*120,yy,35,50,'#ff4050')}
-   text('Distancia: '+Math.floor(t/10),20,35);
-  } else if(mode==='runner'||mode==='lanes'||mode==='prun'||mode==='jungle'){
-   if(keys.left)x-=6;if(keys.right)x+=6;if(keys.up)y-=7;y+=3;x=Math.max(20,Math.min(760,x));y=Math.min(450,y);
-   rect(x,420,35,30,'#00eaff');
-   for(let i=0;i<6;i++)rect((i*137+t*2)%800,380-(i%3)*55,40,20,'#ff4050');
-   text('Corre: '+Math.floor(t/10),20,35);
-  } else if(mode==='brick'||mode==='bounce'){
-   x=400+Math.sin(t/20)*220;circle(x,150+Math.sin(t/12)*100,14,'#00eaff');
-   for(let i=0;i<10;i++)rect(80+i*65,60+(i%2)*35,55,20,colors[i%colors.length]);
-   rect(x-45,450,90,15,'#fff');text('Rebotes: '+Math.floor(t/20),20,35);
-  } else if(mode==='catch'||mode==='bubbles'||mode==='rings'){
-   if(keys.left)x-=7;if(keys.right)x+=7;x=Math.max(25,Math.min(775,x));
-   rect(x-35,445,70,20,'#00eaff');
-   if(t%25===0)objects.push({x:rand(760)+20,y:-10});
-   objects.forEach(o=>{o.y+=4;circle(o.x,o.y,14,colors[Math.floor(rand(colors.length))])});
-   objects=objects.filter(o=>o.y<520);text('Objetos: '+objects.length,20,35);
-  } else if(mode==='reflex'||mode==='target'||mode==='whack'){
-   if(!goal||t%70===0)goal={x:rand(700)+50,y:rand(350)+70};
-   circle(goal.x,goal.y,35,'#00eaff');text('¡Pulsa el objetivo!',270,35);
-   if(keys.space&&dist(400,250,goal.x,goal.y)<80){score++;goal=null}
-   text('Puntos: '+score,20,475);
-  } else if(mode==='memory'||mode==='signal'||mode==='sequence'){
-   const n=4+Math.floor(t/120)%4; text('Memoriza la secuencia: '+Array.from({length:n},(_,i)=>i+1).join(' → '),150,220);
-   text('Pulsa ESPACIO cuando termines',240,280);if(keys.space)score++;
-   text('Rondas: '+score,20,35);
-  } else if(mode==='timer'||mode==='solar'||mode==='light'){
-   const remain=Math.max(0,30-Math.floor(t/60));text('Tiempo: '+remain,330,55,32);
-   for(let i=0;i<5;i++){circle(100+i*150,250,45,(Math.floor(t/20)+i)%2?'#18263a':'#ffd84a')}
-   if(keys.space)score++;
-   text('Puntos: '+score,20,475);
-  } else if(mode==='dive'||mode==='climb'||mode==='cave'){
-   y=80+(t%380);if(keys.up)y-=6;if(keys.down)y+=6;
-   circle(400,y,18,'#00eaff');for(let i=0;i<7;i++)rect(80+i*110,120+(i%2)*170,35,120,'#ff4050');
-   text('Profundidad: '+Math.floor(y),20,35);
-  } else if(mode==='connect'||mode==='circuit'||mode==='sparks'||mode==='switches'){
-   for(let i=0;i<8;i++){circle(100+i*85,200+(i%2)*120,22,colors[i%6]);}
-   rect(300,430,200,35,'#172236');text('Conecta los nodos en orden',255,455,18);
-   if(keys.space)score++;text('Conexiones: '+score,20,35);
-  } else if(mode==='defense'||mode==='base'||mode==='cruiser'||mode==='wave'){
-   x=400;if(keys.left)x-=6;if(keys.right)x+=6;rect(x-30,430,60,30,'#00eaff');
-   for(let i=0;i<9;i++){let xx=(i*97+t*4)%850-25;rect(xx,70+(i%3)*100,25,55,'#ff4050')}
-   text('Base: '+Math.max(0,100-Math.floor(t/50))+'%',20,35);
-  } else if(mode==='mines'||mode==='escape'||mode==='maze'){
-   if(keys.left)x-=5;if(keys.right)x+=5;if(keys.up)y-=5;if(keys.down)y+=5;
-   x=Math.max(20,Math.min(780,x));y=Math.max(60,Math.min(460,y));circle(x,y,16,'#00eaff');
-   for(let i=0;i<10;i++)circle(70+i*75,100+(i%4)*80,12,'#ff4050');
-   text('Encuentra la salida →',300,35);
-  } else if(mode==='fuel'||mode==='satellite'||mode==='velocity'){
-   if(keys.left)x-=4;if(keys.right)x+=4;if(keys.up)y-=4;if(keys.down)y+=4;
-   circle(x,y,18,'#00eaff');circle(400,250,150,'#172236');circle(400,250,155,'#29364b');
-   text('Energía: '+Math.max(0,100-Math.floor(t/40)),20,35);
-  } else if(mode==='angle'||mode==='catapult'){
-   let a=((t%120)/120)*Math.PI;rect(100,420,60,20,'#00eaff');
-   rect(150,410,5,-Math.sin(a)*100,'#fff');circle(600,350,30,'#ff4050');text('Ajusta el ángulo y pulsa ESPACIO',220,35,20);
-   if(keys.space)score++;text('Intentos: '+score,20,475);
-  } else if(mode==='timing'||mode==='pulse'||mode==='thunder'){
-   for(let i=0;i<8;i++){let on=((t+i*20)%100)<45;rect(70+i*90,200,55,100,on?'#ff4050':'#172236')}
-   rect(x-15,330,30,30,'#00eaff');if(keys.left)x-=5;if(keys.right)x+=5;
-   text('Cruza cuando las barreras estén apagadas',180,70);
-  } else if(mode==='ice'||mode==='slide'||mode==='vector'){
-   if(keys.left)vel=-5;if(keys.right)vel=5;if(keys.up)vel=-5;if(keys.down)vel=5;
-   x+=vel;y+=vel;vel*=.97;x=Math.max(20,Math.min(780,x));y=Math.max(80,Math.min(460,y));
-   circle(x,y,20,'#00eaff');rect(650,400,90,50,'#72ff7a');text('Llega a la zona verde',290,35);
-  } else {
-   if(keys.left)x-=5;if(keys.right)x+=5;if(keys.up)y-=5;if(keys.down)y+=5;
-   x=Math.max(20,Math.min(780,x));y=Math.max(70,Math.min(460,y));circle(x,y,20,'#00eaff');
-   circle(650,400,35,'#72ff7a');text(g.desc,20,35,18);text('Puntos: '+score,20,475);
-   if(dist(x,y,650,400)<50)score++;
-  }
- }
- loop();
-}
+        </section>
 
-document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{
- category=b.dataset.cat;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();
-});
-search.addEventListener('input',render);
-render();
-</script>
+
+        <!-- BUSCADOR -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="🔎 Buscar juegos..."
+                autocomplete="off">
+
+            <button onclick="searchGames()">
+                Buscar
+            </button>
+
+        </div>
+
+
+        <!-- CATEGORÍAS -->
+
+        <div class="categories">
+
+            <button class="category active"
+                    onclick="filterGames('all', this)">
+                Todos
+            </button>
+
+            <button class="category"
+                    onclick="filterGames('arcade', this)">
+                🕹️ Arcade
+            </button>
+
+            <button class="category"
+                    onclick="filterGames('action', this)">
+                ⚔️ Acción
+            </button>
+
+            <button class="category"
+                    onclick="filterGames('racing', this)">
+                🏎️ Carreras
+            </button>
+
+            <button class="category"
+                    onclick="filterGames('puzzle', this)">
+                🧩 Puzzle
+            </button>
+
+        </div>
+
+
+        <!-- JUEGOS -->
+
+        <section class="games" id="games">
+
+            <article class="game"
+                     data-name="Pac-Man"
+                     data-category="arcade">
+
+                <div class="game-image">
+                    🟡
+                </div>
+
+                <h3>Pac-Man</h3>
+                <p>Arcade clásico</p>
+
+            </article>
+
+
+            <article class="game"
+                     data-name="Super Mario"
+                     data-category="action">
+
+                <div class="game-image">
+                    🍄
+                </div>
+
+                <h3>Super Mario</h3>
+                <p>Aventura clásica</p>
+
+            </article>
+
+
+            <article class="game"
+                     data-name="Tetris"
+                     data-category="puzzle">
+
+                <div class="game-image">
+                    🧱
+                </div>
+
+                <h3>Tetris</h3>
+                <p>Puzzle clásico</p>
+
+            </article>
+
+
+            <article class="game"
+                     data-name="Racing"
+                     data-category="racing">
+
+                <div class="game-image">
+                    🏎️
+                </div>
+
+                <h3>Racing</h3>
+                <p>Carreras retro</p>
+
+            </article>
+
+
+            <article class="game"
+                     data-name="Space Shooter"
+                     data-category="arcade">
+
+                <div class="game-image">
+                    🚀
+                </div>
+
+                <h3>Space Shooter</h3>
+                <p>Arcade espacial</p>
+
+            </article>
+
+
+            <article class="game"
+                     data-name="Puzzle Blocks"
+                     data-category="puzzle">
+
+                <div class="game-image">
+                    🧩
+                </div>
+
+                <h3>Puzzle Blocks</h3>
+                <p>Rompecabezas</p>
+
+            </article>
+
+        </section>
+
+    </main>
+
+
+    <!-- =================================
+         FOOTER
+    ================================== -->
+
+    <footer>
+
+        <strong>Retroyer</strong>
+
+        <br>
+
+        Juegos retro para todos.
+
+        <br><br>
+
+        © 2026 Retroyer
+
+    </footer>
+
+
+    <!-- =================================
+         JAVASCRIPT
+    ================================== -->
+
+    <script>
+
+        const searchInput =
+            document.getElementById("search");
+
+        const games =
+            document.querySelectorAll(".game");
+
+
+        function searchGames() {
+
+            const text =
+                searchInput.value
+                .toLowerCase()
+                .trim();
+
+            games.forEach(game => {
+
+                const name =
+                    game.dataset.name.toLowerCase();
+
+                game.style.display =
+                    name.includes(text)
+                    ? ""
+                    : "none";
+
+            });
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            searchGames
+        );
+
+
+        function filterGames(category, button) {
+
+            document
+                .querySelectorAll(".category")
+                .forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+            button.classList.add("active");
+
+
+            games.forEach(game => {
+
+                if (
+                    category === "all" ||
+                    game.dataset.category === category
+                ) {
+
+                    game.style.display = "";
+
+                } else {
+
+                    game.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+    </script>
+
 </body>
 </html>
