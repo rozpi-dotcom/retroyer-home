@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Retroyer Status</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(circle at top, #192044, #080a12 55%);
+    color: white;
+    min-height: 100vh;
+}
+
+header {
+    padding: 25px;
+    border-bottom: 1px solid #252b45;
+    background: #080a12cc;
+    backdrop-filter: blur(12px);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #00ff9d;
+}
+
+.logo span {
+    color: white;
+}
+
+.container {
+    width: min(1100px, 92%);
+    margin: auto;
+}
+
+.hero {
+    text-align: center;
+    padding: 65px 20px 40px;
+}
+
+.hero h1 {
+    font-size: clamp(40px, 7vw, 70px);
+    margin: 0;
+}
+
+.hero p {
+    color: #9da5bd;
+    font-size: 18px;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: #0c2a21;
+    color: #00ff9d;
+    border: 1px solid #00ff9d55;
+    font-weight: bold;
+}
+
+.dot {
+    width: 11px;
+    height: 11px;
+    background: #00ff9d;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #00ff9d;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin: 30px 0;
+}
+
+.card {
+    background: #101426dd;
+    border: 1px solid #252b45;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 10px 30px #0005;
+}
+
+.card:hover {
+    border-color: #00ff9d66;
+    transform: translateY(-2px);
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+.state {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #00ff9d;
+    font-weight: bold;
+}
+
+.small-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #00ff9d;
+    box-shadow: 0 0 10px #00ff9d;
+}
+
+.value {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.label {
+    color: #7f879e;
+    margin-top: 5px;
+}
+
+.section-title {
+    margin-top: 50px;
+}
+
+.uptime {
+    height: 45px;
+    display: flex;
+    gap: 3px;
+    margin-top: 18px;
+}
+
+.bar {
+    flex: 1;
+    background: #00ff9d;
+    border-radius: 3px;
+    opacity: .85;
+}
+
+.bar:hover {
+    opacity: 1;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 35px 0;
+    flex-wrap: wrap;
+}
+
+button,
+.link {
+    border: 0;
+    padding: 13px 22px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+button {
+    background: #00ff9d;
+    color: #06100c;
+}
+
+button:hover {
+    box-shadow: 0 0 25px #00ff9d55;
+}
+
+.link {
+    background: #181d31;
+    color: white;
+    border: 1px solid #303753;
+}
+
+.incident {
+    border-left: 4px solid #00ff9d;
+    background: #101426;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+.incident strong {
+    color: #00ff9d;
+}
+
+footer {
+    text-align: center;
+    padding: 50px 20px;
+    color: #687089;
+    border-top: 1px solid #20263b;
+    margin-top: 60px;
+}
+
+#lastCheck {
+    color: #8c94aa;
+    text-align: center;
+    margin-top: 15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <div class="logo">
+            RETROYER<span>.COM</span>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+<section class="hero">
+
+```
+<h1>Estado del sistema</h1>
+
+<p>
+    Monitoreo en tiempo real de Retroyer y sus servicios.
+</p>
+
+<div class="status">
+    <div class="dot"></div>
+    Todos los sistemas operativos
+</div>
+```
+
+</section>
+
+<section class="grid">
+
+```
+<div class="card">
+    <h3>🌐 Sitio web</h3>
+
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+
+    <div class="value">100%</div>
+    <div class="label">Disponibilidad</div>
+</div>
+
+<div class="card">
+    <h3>🎮 Juegos</h3>
+
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativos
+    </div>
+
+    <div class="value" id="games">1,000+</div>
+    <div class="label">Juegos disponibles</div>
+</div>
+
+<div class="card">
+    <h3>⚡ Servidor</h3>
+
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+
+    <div class="value" id="ping">24 ms</div>
+    <div class="label">Latencia</div>
+</div>
+
+<div class="card">
+    <h3>🗄️ API</h3>
+
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativa
+    </div>
+
+    <div class="value">99.99%</div>
+    <div class="label">Disponibilidad</div>
+</div>
+```
+
+</section>
+
+<h2 class="section-title">📊 Disponibilidad — últimos 30 días</h2>
+
+<div class="card">
+
+```
+<div class="uptime" id="uptime"></div>
+
+<div style="display:flex;justify-content:space-between;color:#7f879e;margin-top:10px;">
+    <span>30 días atrás</span>
+    <span>Hoy</span>
+</div>
+```
+
+</div>
+
+<h2 class="section-title">🛰️ Componentes</h2>
+
+<div class="grid">
+
+```
+<div class="card">
+    <h3>Retroyer Web</h3>
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+</div>
+
+<div class="card">
+    <h3>Game Library</h3>
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+</div>
+
+<div class="card">
+    <h3>CDN</h3>
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+</div>
+
+<div class="card">
+    <h3>API</h3>
+    <div class="state">
+        <div class="small-dot"></div>
+        Operativo
+    </div>
+</div>
+```
+
+</div>
+
+<h2 class="section-title">📋 Historial</h2>
+
+<div class="incident">
+    <strong>✓ Hoy</strong><br>
+    Todos los sistemas funcionan normalmente.
+</div>
+
+<div class="incident">
+    <strong>✓ Ayer</strong><br>
+    Sin incidentes registrados.
+</div>
+
+<div class="incident">
+    <strong>✓ Últimos 7 días</strong><br>
+    Sin interrupciones importantes.
+</div>
+
+<div class="actions">
+
+```
+<button onclick="checkStatus()">
+    🔄 Comprobar ahora
+</button>
+
+<a class="link" href="https://retroyer.com/">
+    🎮 Ir a Retroyer
+</a>
+```
+
+</div>
+
+<div id="lastCheck">
+    Última comprobación: ahora
+</div>
+
+</main>
+
+<footer>
+
+```
+RETROYER.COM STATUS<br>
+© 2026 Retroyer — Estado de servicios
+```
+
+</footer>
+
+<script>
+
+const uptime = document.getElementById("uptime");
+
+for (let i = 0; i < 30; i++) {
+
+    const bar = document.createElement("div");
+
+    bar.className = "bar";
+
+    uptime.appendChild(bar);
+}
+
+function checkStatus() {
+
+    const button = document.querySelector("button");
+
+    button.textContent = "⏳ Comprobando...";
+
+    setTimeout(() => {
+
+        const ping =
+            Math.floor(Math.random() * 30) + 15;
+
+        document.getElementById("ping").textContent =
+            ping + " ms";
+
+        document.getElementById("lastCheck").textContent =
+            "Última comprobación: " +
+            new Date().toLocaleTimeString();
+
+        button.textContent =
+            "✓ Comprobación completada";
+
+        setTimeout(() => {
+            button.textContent = "🔄 Comprobar ahora";
+        }, 2000);
+
+    }, 900);
+}
+
+</script>
+
+</body>
+</html>
